@@ -15,11 +15,36 @@ const { Schema } = mongoose;
 
    rating:{
      type:Number,
+     default:0.0,
      require:true
+   },
+
+   featured:{
+     type:Boolean,
+     default:false,
+     required:true
+   },
+
+   type:{
+     type:String,
+     required:true
+   },
+   genre:{
+     type:String,
+     required:true
+   },
+
+   description:{
+    type:String,
+    require:true
+  },
+   trailer:{
+     type:String,
    },
    
    price:{
     type:Number,
+    default:0.00,
     require:true
    },
 

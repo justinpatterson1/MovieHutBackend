@@ -1,6 +1,10 @@
+const movieController = require('./controller/movieController.js')
 const express = require('express');
 const mongoose = require('mongoose')
-const movieController = require('./controller/movieController.js')
+const cors = require('cors')
+const fileUpload = require('express-fileupload')
+
+
 const app = express();
 
 if(process.env.NODE_ENV!="production")
@@ -9,6 +13,14 @@ if(process.env.NODE_ENV!="production")
 }
 
 app.use(express.json());
+
+app.use(fileUpload());
+
+
+
+app.use(cors({
+    origin:process.env.FRONT_END
+}))
 
 app.use("/movie",movieController)
 
