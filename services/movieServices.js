@@ -1,21 +1,97 @@
 const movieModel = require('../model/movieModel.js');
+const { v4: uuidv4 } = require('uuid');
 
 
 exports.getAllMovies=(req,res)=>{
-    movieModel.find()
+    if(req.query.type==='Movie'){
+        movieModel.find({type:'Movie'})
+        .then((movie)=>{
+            res.json({
+                message:"All movies have been returned",
+                data:movie,
+                length:movie.length
+            })
+            
+        })
+        .catch(err=>{
+            res.status(404).json({
+                message:'Error returning movies',
+                data:err
+
+            })
+        })
+      
+    }else if(req.query.type==='Tv Show'){
+    movieModel.find({type:'Tv Show'})
     .then((movie)=>{
         res.json({
-            message:'All Movies have been returned',
+            message:'All Tv Shows have been returned',
             data:movie,
             length:movie.length
         })
     })
     .catch(err=>{
-        res.json({
-            message:'Movie could not be returned',
+        res.status(404).json({
+            message:'Tv Shows could not be returned',
             data:err
         }) 
        })
+   
+    }else if(req.query.promoted){
+
+        movieModel.find({promoted:'true'})
+        .then((movie)=>{
+            res.json({
+                message:"All promoted movies have been returned",
+                data:movie,
+                length:movie.length
+            })
+            
+        })
+        .catch(err=>{
+            res.status(404).json({
+                message:'Error returning movies',
+                data:err
+
+            })
+        })
+
+    }
+    else if(req.query.featured){
+
+        movieModel.find({featured:'true'})
+        .then((movie)=>{
+            res.json({
+                message:"All featured movies have been returned",
+                data:movie,
+                length:movie.length
+            })
+            
+        })
+        .catch(err=>{
+            res.status(404).json({
+                message:'Error returning movies',
+                data:err
+
+            })
+        })
+    }else{
+        movieModel.find()
+    .then((movie)=>{
+        res.json({
+            message:'All Shows have been returned',
+            data:movie,
+            length:movie.length
+        })
+    })
+    .catch(err=>{
+        res.status(404).json({
+            message:'All Shows could not be returned',
+            data:err
+        }) 
+       })
+    }
+    
 }
 
 
@@ -26,14 +102,14 @@ exports.getAMovie=(req,res)=>{
     movieModel.findById(req.params.id)
     .then((movie)=>{
 
-        if(movie){
-
+       
+       if(movie){
             res.json({
                 message:`Movie with id:${req.params.id} has been returned`,
                 data:movie
             })
-
-        }else{
+       }else{
+      
 
             res.status(404).json({
                 message:`Movie with id:${req.params.id} was not returned`,
@@ -63,20 +139,25 @@ exports.createAMovie =(req,res)=>{
 
 
     const newMovie = new movieModel(req.body)
+    
+   
     newMovie.save()
     .then((movie)=>{
-        
-
+      
+        const fileName = `${uuidv4()}_${req.files.img.name}`
         const params = {
             Bucket: process.env.BUCKET_NAME,
-            Key: req.files.img.name,
+            Key: fileName,
             Body:req.files.img.data
         };
+        console.log("Blah")
         
         s3.upload(params, function(err, data) {
             if (err) {
                 throw err;
             }
+
+            
 
             newMovie.img = data.Location
             newMovie.save()
@@ -85,6 +166,8 @@ exports.createAMovie =(req,res)=>{
                     message:'Movie was created',
                     data:movie
                 })
+
+
             })
 
             
@@ -93,7 +176,7 @@ exports.createAMovie =(req,res)=>{
     
     })
     .catch(err=>{
-        res.status(404).json({
+        res.status(500).json({
          message:'Movie was not created',
          error:err
         }) 

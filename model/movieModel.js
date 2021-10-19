@@ -25,6 +25,11 @@ const { Schema } = mongoose;
      required:true
    },
 
+   promoted:{
+    type:Boolean,
+    default:false,
+    required:true
+   },
    type:{
      type:String,
      required:true

@@ -1,4 +1,5 @@
 const movieController = require('./controller/movieController.js')
+const usersController = require('./controller/usersController.js')
 const express = require('express');
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -23,6 +24,7 @@ app.use(cors({
 }))
 
 app.use("/movie",movieController)
+app.use("/users",usersController)
 
 const PORT = process.env.PORT;
 

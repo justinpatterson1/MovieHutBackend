@@ -1,9 +1,12 @@
-const userModel = require('../model/userModel.js');
+const userModel = require('../model/usersModel.js');
+const bcrypt = require("bcryptjs")
 
 
 exports.getAllUsers=(req,res)=>{
     userModel.find()
     .then((movie)=>{
+
+
         res.json({
             message:'All Movies have been returned',
             data:movie,
@@ -54,16 +57,32 @@ exports.getAUser=(req,res)=>{
 
 exports.createAUser =(req,res)=>{
     const newMovie = new userModel(req.body)
+
+   
     newMovie.save()
-    .then(movie=>{
-        res.json({
-            message:'Movie was created',
-            data:movie
+    
+    .then(user=>{
+
+        bcrypt.genSalt(10)
+        .then((salt)=>{
+            bcrypt.hash(user.password,salt)
+            .then((hash)=>{
+                user.password = hash
+                
+                user.save()
+                .then((newUser)=>{
+                    res.json({
+                        message:'User was created',
+                        data:newUser
+                    })
+                })
+            })
         })
+        
     })
     .catch(err=>{
         res.status(404).json({
-         message:'Movie was not created',
+         message:'User was not created',
          error:err
         }) 
      })
@@ -105,5 +124,28 @@ exports.updateAUser=(req,res)=>{
 }
 
 
+exports.userAuthentication=(req,res)=>{
 
+    userModel.findOne()
+    .where("email").equals(req.body.email)
+    .then(user =>{
+        
+        if(user)
+        {
+            res.json({
+                message:"email is valid"
+            })
+        }
+        else{
+            res.json({
+                message:"email is invalid"
+            })
+        }
+    })
+    .catch(err => {
+        res.status(500).json({
+            message:err
+        })
+    })
+}
 

@@ -12,15 +12,20 @@ const { Schema } = mongoose;
      require:true
    },
 
-   age:{
-     type:Number,
-     require:true
+   email:{
+    type:String,
+    required:true
    },
 
-   sex:{
-     type:String,
-     default:false,
-     required:true
+   password:{
+    type:String,
+    required:true
+   },
+
+   level:{
+    type:String,
+    default:"User",
+    required:true
    },
 
 
@@ -31,5 +36,5 @@ const { Schema } = mongoose;
    }
   });
 
-const movieModel = mongoose.model('user',userSchema)
+const userModel = mongoose.model('user',userSchema)
 module.exports = userModel;
