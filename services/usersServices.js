@@ -1,5 +1,6 @@
 const userModel = require('../model/usersModel.js');
 const bcrypt = require("bcryptjs")
+const jwt = require('jsonwebtoken');
 
 
 exports.getAllUsers=(req,res)=>{
@@ -132,12 +133,29 @@ exports.userAuthentication=(req,res)=>{
         
         if(user)
         {
-            res.json({
-                message:"email is valid"
+
+            bcrypt.compare(req.body.password,user.password)
+            .then((user)=>{
+                if(user){
+                    var token = jwt.sign({ 
+                        _id: user._id,
+                        firstName:user.firstName,
+                        lastName:user.lastName,
+                        email:user.email 
+                    }, process.env.JWT_TOKEN);
+                       res.header('x-auth-header',token).json({
+                            message:"Your're in"
+                         })
+                }
+                else{
+                    res.status(400).json({
+                        message:"Email/Password is incorrect"
+                     })
+                }
             })
         }
         else{
-            res.json({
+            res.status(400).json({
                 message:"email is invalid"
             })
         }
@@ -148,4 +166,6 @@ exports.userAuthentication=(req,res)=>{
         })
     })
 }
+
+
 
