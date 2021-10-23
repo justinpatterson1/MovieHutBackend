@@ -1,5 +1,6 @@
 const movieController = require('./controller/movieController.js')
 const usersController = require('./controller/usersController.js')
+const {db} = require('./db/movies-seed')
 const express = require('express');
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -34,6 +35,7 @@ app.listen(PORT,()=>{
     mongoose.connect(process.env.MONGO_DB_CONNECTION, {useNewUrlParser: true, useUnifiedTopology: true})
     .then(()=>{
         console.log('your in')
+        //db();
     })
     .catch(err=>{
         console.log('you failed'+err)

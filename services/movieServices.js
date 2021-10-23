@@ -4,7 +4,10 @@ const { v4: uuidv4 } = require('uuid');
 
 exports.getAllMovies=(req,res)=>{
     if(req.query.type==='Movie'){
+        if(req.query.page){
         movieModel.find({type:'Movie'})
+        .skip((req.query.page -1)*18)
+        .limit(18)
         .then((movie)=>{
             res.json({
                 message:"All movies have been returned",
@@ -20,9 +23,31 @@ exports.getAllMovies=(req,res)=>{
 
             })
         })
+    }else{
+        movieModel.find({type:'Movie'})
+        .limit(18)
+        .then((movie)=>{
+            res.json({
+                message:"All movies have been returned",
+                data:movie,
+                length:movie.length
+            })
+            
+        })
+        .catch(err=>{
+            res.status(404).json({
+                message:'Error returning movies',
+                data:err
+
+            })
+        })
+    }
       
     }else if(req.query.type==='Tv Show'){
-    movieModel.find({type:'Tv Show'})
+        if(req.query.page){
+            movieModel.find({type:'Tv Show'})
+    .skip((req.query.page -1)*18)
+    .limit(18)
     .then((movie)=>{
         res.json({
             message:'All Tv Shows have been returned',
@@ -36,6 +61,26 @@ exports.getAllMovies=(req,res)=>{
             data:err
         }) 
        })
+        }else{
+
+            movieModel.find({type:'Tv Show'})
+            .limit(18)
+            .then((movie)=>{
+                res.json({
+                    message:'All Tv Shows have been returned',
+                    data:movie,
+                    length:movie.length
+                })
+            })
+            .catch(err=>{
+                res.status(404).json({
+                    message:'Tv Shows could not be returned',
+                    data:err
+                }) 
+               })
+        }
+
+    
    
     }else if(req.query.promoted){
 
@@ -184,7 +229,7 @@ exports.createAMovie =(req,res)=>{
 }
 
 exports.deleteAMovie =(req,res)=>{
-    movieModel.findByIdAndDelete({_id:req.params.id})
+    movieModel.deleteMany({type:"Movie"})
     .then((movie)=>{
         res.json({
             message:`${req.params.id} was deleted`,

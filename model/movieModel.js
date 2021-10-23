@@ -12,6 +12,11 @@ const { Schema } = mongoose;
      default:"default.jpg",
      require:true
    },
+   poster:{
+    type:String,
+    default:"default.jpg",
+    require:true
+  },
 
    rating:{
      type:Number,
@@ -36,7 +41,7 @@ const { Schema } = mongoose;
    },
    genre:{
      type:String,
-     required:true
+     
    },
 
    description:{
@@ -52,7 +57,10 @@ const { Schema } = mongoose;
     default:0.00,
     require:true
    },
+   release_date:{
+    type:Date,
 
+   },
    dateCreated:
    {
        type:Date,
