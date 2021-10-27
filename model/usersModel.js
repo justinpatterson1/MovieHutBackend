@@ -31,8 +31,58 @@ const { Schema } = mongoose;
     default:"User",
     required:true
    },
-
-
+   cart:[
+     {
+        id:Number,
+        name:String,
+        price:Number,
+        img:String,
+        quantity:Number,
+        cost:Number,
+        buy:{
+          type:Boolean,
+          default:false
+        },
+        rent:{
+          type:Boolean,
+          default:false
+        }
+     }
+   ],
+   purchased:[
+     {
+      id:Number,
+        name:String,
+        price:Number,
+        img:String,
+        quantity:Number,
+        cost:Number,
+        buy:{
+          type:Boolean,
+          default:false
+        },
+        rent:{
+          type:Boolean,
+          default:false
+        }
+     }
+   ],
+   rented:[{
+    id:Number,
+    name:String,
+    price:Number,
+    img:String,
+    quantity:Number,
+    cost:Number,
+    buy:{
+      type:Boolean,
+      default:false
+    },
+    rent:{
+      type:Boolean,
+      default:false
+    }
+   }],
    dateCreated:
    {
        type:Date,

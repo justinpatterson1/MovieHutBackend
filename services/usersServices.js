@@ -135,16 +135,20 @@ exports.userAuthentication=(req,res)=>{
         {
 
             bcrypt.compare(req.body.password,user.password)
-            .then((user)=>{
-                if(user){
-                    var token = jwt.sign({ 
+            .then((value)=>{
+                if(value){
+                    console.log(user)
+                    const token = jwt.sign({ 
                         _id: user._id,
                         firstName:user.firstName,
                         lastName:user.lastName,
                         email:user.email 
                     }, process.env.JWT_TOKEN);
+                    console.log(token)
                        res.header('x-auth-header',token).json({
-                            message:"Your're in"
+                            message:"Your're in",
+                            token:token,
+                            
                          })
                 }
                 else{
