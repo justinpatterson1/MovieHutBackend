@@ -37,16 +37,8 @@ const { Schema } = mongoose;
         name:String,
         price:Number,
         img:String,
-        quantity:Number,
         cost:Number,
-        buy:{
-          type:Boolean,
-          default:false
-        },
-        rent:{
-          type:Boolean,
-          default:false
-        }
+        
      }
    ],
    purchased:[

@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 
 exports.getAllUsers=(req,res)=>{
+    
     userModel.find()
     .then((movie)=>{
 
@@ -20,13 +21,36 @@ exports.getAllUsers=(req,res)=>{
             data:err
         }) 
        })
+    
 }
 
 
 
 exports.getAUser=(req,res)=>{
     
+    // if(req.query.itemID){
+
+    //     userModel.find({cart :{_id:req.query.itemID}})
+    //     .where({_id:req.params._id})
+    //     .then((movie)=>{
+    
+    
+    //         res.json({
+    //             message:`All ${req.query.itemID}have been returned`,
+    //             data:movie,
+    //             length:movie.length,
+    //             search:"kkkk"
+    //         })
+    //     })
+    //     .catch(err=>{
+    //         res.json({
+    //             message:'Movie could not be returned',
+    //             data:err
+    //         }) 
+    //        })
+    // }else{
    
+
     userModel.findById(req.params.id)
     .then((movie)=>{
 
@@ -34,7 +58,8 @@ exports.getAUser=(req,res)=>{
 
             res.json({
                 message:`Movie with id:${req.params.id} has been returned`,
-                data:movie
+                data:movie,
+                cc:"findbyid"
             })
 
         }else{
@@ -53,6 +78,7 @@ exports.getAUser=(req,res)=>{
          error:err
         }) 
      })
+    
 }
 
 
@@ -72,10 +98,37 @@ exports.createAUser =(req,res)=>{
                 
                 user.save()
                 .then((newUser)=>{
-                    res.json({
-                        message:'User was created',
-                        data:newUser
+                    // res.json({
+                    //     message:'User was created',
+                    //     data:newUser
+
+                        
+                    //})
+                    const sgMail = require('@sendgrid/mail')
+                    sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+                    const msg = {
+                    to: `${newUser.email}`, // Change to your recipient
+                    from: 'justin_omari_9@hotmail.com', // Change to your verified sender
+                    subject: 'Thank You For Joining',
+                    text: `Thank You ${newUser.firstName} ${newUser.lastName} for joining.
+                    You have successfully signed up for movieHut`,
+                    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+                    }
+                    sgMail
+                    .send(msg)
+                    .then(() => {
+                        res.json({
+                                message:'User was created',
+                                data:newUser
+        
+                                
+                            })
+                        console.log('Email sent')
                     })
+                    .catch((error) => {
+                        console.error(error)
+                    })
+
                 })
             })
         })

@@ -6,11 +6,12 @@ const router = express.Router();
 
 
 
-router.get("/",usersMiddleware.protectedRoutes,usersServices.getAllUsers)
+router.get("/",usersServices.getAllUsers)
 router.post("/",usersServices.createAUser)
 router.get("/:id",usersServices.getAUser)
 router.delete("/:id",usersServices.deleteAUser)
 router.put("/:id",usersServices.updateAUser)
 router.post("/auth",usersServices.userAuthentication)
+router.delete("/:id",usersServices.deleteAUser)
 
 module.exports = router;
