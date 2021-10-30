@@ -38,6 +38,9 @@ const { Schema } = mongoose;
         price:Number,
         img:String,
         cost:Number,
+        quantity:Number,
+        order:String
+        
         
      }
    ],

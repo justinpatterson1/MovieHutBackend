@@ -108,21 +108,25 @@ exports.createAUser =(req,res)=>{
                     sgMail.setApiKey(process.env.SENDGRID_API_KEY)
                     const msg = {
                     to: `${newUser.email}`, // Change to your recipient
-                    from: 'justin_omari_9@hotmail.com', // Change to your verified sender
+                    from: 'jpatterson@sheppard.tt', // Change to your verified sender
                     subject: 'Thank You For Joining',
-                    text: `Thank You ${newUser.firstName} ${newUser.lastName} for joining.
-                    You have successfully signed up for movieHut`,
-                    html: '<strong>and easy to do anywhere, even with Node.js</strong>',
+                    text: " ",
+                    html: `Thank You ${newUser.firstName} ${newUser.lastName} for joining.
+                    You have successfully signed up for movieHut`
                     }
                     sgMail
                     .send(msg)
                     .then(() => {
+                        console.log('it not working')
+                        
                         res.json({
                                 message:'User was created',
                                 data:newUser
         
                                 
                             })
+
+                            console.log(newUser.email)
                         console.log('Email sent')
                     })
                     .catch((error) => {
@@ -195,7 +199,8 @@ exports.userAuthentication=(req,res)=>{
                         _id: user._id,
                         firstName:user.firstName,
                         lastName:user.lastName,
-                        email:user.email 
+                        email:user.email ,
+                        level:user.level
                     }, process.env.JWT_TOKEN);
                     console.log(token)
                        res.header('x-auth-header',token).json({

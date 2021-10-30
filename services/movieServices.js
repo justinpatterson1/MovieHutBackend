@@ -3,9 +3,26 @@ const { v4: uuidv4 } = require('uuid');
 
 
 exports.getAllMovies=(req,res)=>{
-    if(req.query.type==='Tv Show'){
-        
-        if(req.query.page){
+    if(req.query.q)
+    {
+        movieModel.find({name:{$regex: new RegExp(req.query.q)}})
+        .then((movie)=>{
+            res.json({
+                message:'All Shows have been returned',
+                data:movie,
+                length:movie.length
+            })
+        })
+        .catch(err=>{
+            res.status(404).json({
+                message:'All Shows could not be returned',
+                data:err
+            }) 
+           })
+        }else if(req.query.type==='Tv Show'){
+
+            
+          if(req.query.page){
 
             
             movieModel.find({type:'Tv Show'})
@@ -24,7 +41,27 @@ exports.getAllMovies=(req,res)=>{
             data:err
         }) 
        })
-        }  else if(req.query.featured){
+        }  else if(req.query.sort){
+            movieModel.find({type:'Tv Show'})
+            .sort({release_date:req.query.sort})
+            .skip((req.query.slideAmt -1)*5)
+            .limit(5)
+            .then((movie)=>{
+                res.json({
+                    message:"All movies have been returned",
+                    data:movie,
+                    length:movie.length
+                })
+                
+            })
+            .catch(err=>{
+                res.status(404).json({
+                    message:'Error returning movies',
+                    data:err
+    
+                })
+            })
+        }else if(req.query.featured){
         
             movieModel.find({featured:'true'})
             .where({type:'Tv Show'})
@@ -68,7 +105,28 @@ exports.getAllMovies=(req,res)=>{
    
     }  
     else if(req.query.type==='Movie'){
-        if(req.query.page){
+        if(req.query.sort){
+            movieModel.find({type:'Movie'})
+            .sort({release_date:req.query.sort})
+            .skip((req.query.slideAmt -1)*5)
+            .limit(5)
+            .then((movie)=>{
+                res.json({
+                    message:"All movies have been returned",
+                    data:movie,
+                    length:movie.length
+                })
+                
+            })
+            .catch(err=>{
+                res.status(404).json({
+                    message:'Error returning movies',
+                    data:err
+    
+                })
+            })
+        }
+        else if(req.query.page){
         movieModel.find({type:'Movie'})
         .skip((req.query.page -1)*18)
         .limit(18)
@@ -128,7 +186,7 @@ exports.getAllMovies=(req,res)=>{
         })
     }
       
-    }   // else if(req.query.featured){
+    }  // else if(req.query.featured){
     //     if(req.query.type='Movie'){
     //     movieModel.find({featured:'true'})
     //     .then((movie)=>{
@@ -164,6 +222,8 @@ exports.getAllMovies=(req,res)=>{
                 }) 
                })
             }else{
+
+               {
                 movieModel.find()
                 .then((movie)=>{
                     res.json({
@@ -180,12 +240,23 @@ exports.getAllMovies=(req,res)=>{
                    })
                 }
             }
+            }
+
+           
+
+           
+                   
+
+        
 
       
     
 }
 
 
+exports.searchMovies = (req,res)=>{
+    
+}
 
 exports.getAMovie=(req,res)=>{
     
