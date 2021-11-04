@@ -21,46 +21,71 @@ exports.getAllMovies=(req,res)=>{
            })
         }else if(req.query.type==='Tv Show'){
 
-            
-          if(req.query.page){
+            if(req.query.page){
 
             
-            movieModel.find({type:'Tv Show'})
-               .skip((req.query.page -1)*18)
-               .limit(18)
-            .then((movie)=>{
-               return res.json({
-                    message:'All Tv Shows have been returned',
-                    data:movie,
-                    length:movie.length
+                movieModel.find({type:'Tv Show'})
+                   .skip((req.query.page -1)*18)
+                   .limit(18)
+                .then((movie)=>{
+                   return res.json({
+                        message:'All Tv Shows have been returned',
+                        data:movie,
+                        length:movie.length
+                    })
+         })
+        .catch(err=>{
+            res.status(404).json({
+                message:'Tv Shows could not be returned',
+                data:err
+            }) 
+           })
+            } else if(req.query.sort){
+                if(req.query.slideAmt){
+                    movieModel.find({type:'Tv Show'})
+                    .sort({release_date:req.query.sort})
+                    .skip((req.query.slideAmt -1)*5)
+                    .limit(5)
+                    .then((movie)=>{
+                        res.json({
+                            message:"All movies have been returned",
+                            data:movie,
+                            length:movie.length,
+                            mm:'hi'
+                        })
+                        
+                    })
+                    .catch(err=>{
+                        res.status(404).json({
+                            message:'Error returning movies',
+                            data:err
+            
+                        })
+                    })
+               
+                } else if(req.query.page){
+                movieModel.find({type:'Tv Show'})
+                .sort({release_date:req.query.sort})
+                .skip((req.query.page -1)*18)
+                .limit(18)
+                .then((movie)=>{
+                    res.json({
+                        message:"All movies have been returned",
+                        data:movie,
+                        length:movie.length,
+                        mm:'hi'
+                    })
+                    
                 })
-     })
-    .catch(err=>{
-        res.status(404).json({
-            message:'Tv Shows could not be returned',
-            data:err
-        }) 
-       })
-        }  else if(req.query.sort){
-            movieModel.find({type:'Tv Show'})
-            .sort({release_date:req.query.sort})
-            .skip((req.query.slideAmt -1)*5)
-            .limit(5)
-            .then((movie)=>{
-                res.json({
-                    message:"All movies have been returned",
-                    data:movie,
-                    length:movie.length
+                .catch(err=>{
+                    res.status(404).json({
+                        message:'Error returning movies',
+                        data:err
+        
+                    })
                 })
-                
-            })
-            .catch(err=>{
-                res.status(404).json({
-                    message:'Error returning movies',
-                    data:err
-    
-                })
-            })
+           
+            }
         }else if(req.query.featured){
         
             movieModel.find({featured:'true'})
@@ -106,6 +131,7 @@ exports.getAllMovies=(req,res)=>{
     }  
     else if(req.query.type==='Movie'){
         if(req.query.sort){
+            if(req.query.slideAmt ){
             movieModel.find({type:'Movie'})
             .sort({release_date:req.query.sort})
             .skip((req.query.slideAmt -1)*5)
@@ -125,6 +151,27 @@ exports.getAllMovies=(req,res)=>{
     
                 })
             })
+         }else if(req.query.page){
+                movieModel.find({type:'Movie'})
+                .sort({release_date:req.query.sort})
+                .skip((req.query.page -1)*18)
+                .limit(18)
+                .then((movie)=>{
+                    res.json({
+                        message:"All movies have been returned",
+                        data:movie,
+                        length:movie.length
+                    })
+                    
+                })
+                .catch(err=>{
+                    res.status(404).json({
+                        message:'Error returning movies',
+                        data:err
+        
+                    })
+                })
+            }
         }
         else if(req.query.page){
         movieModel.find({type:'Movie'})
@@ -145,6 +192,7 @@ exports.getAllMovies=(req,res)=>{
 
             })
         })
+       
     }else if(req.query.featured==='true'){
         movieModel.find({featured:'true'})
         .where({type:'Movie'})
@@ -186,25 +234,7 @@ exports.getAllMovies=(req,res)=>{
         })
     }
       
-    }  // else if(req.query.featured){
-    //     if(req.query.type='Movie'){
-    //     movieModel.find({featured:'true'})
-    //     .then((movie)=>{
-    //         res.json({
-    //             message:"All featured movies have been returned",
-    //             data:movie,
-    //             length:movie.length
-    //         })
-            
-    //     })
-    //     .catch(err=>{
-    //         res.status(404).json({
-    //             message:'Error returning movies',
-    //             data:err
-
-    //         })
-    //     })}
-    // }
+    } 
     else{
         if(req.query.promoted==='true'){
             movieModel.find({promoted:'true'})
@@ -223,7 +253,7 @@ exports.getAllMovies=(req,res)=>{
                })
             }else{
 
-               {
+               
                 movieModel.find()
                 .then((movie)=>{
                     res.json({
@@ -238,7 +268,7 @@ exports.getAllMovies=(req,res)=>{
                         data:err
                     }) 
                    })
-                }
+                
             }
             }
 
@@ -292,58 +322,92 @@ exports.getAMovie=(req,res)=>{
 
 exports.createAMovie =(req,res)=>{
 
-    const AWS = require('aws-sdk');
-
-    const s3 = new AWS.S3({
-        accessKeyId: process.env.ID,
-        secretAccessKey: process.env.SECRET
-    });
-
-
-    const newMovie = new movieModel(req.body)
-    
    
-    newMovie.save()
-    .then((movie)=>{
-      
-        const fileName = `${uuidv4()}_${req.files.img.name}`
-        const params = {
-            Bucket: process.env.BUCKET_NAME,
-            Key: fileName,
-            Body:req.files.img.data
-        };
-        console.log("Blah")
+
+
+    // const newMovie = new movieModel(req.body)
+    // newMovie.files = req.files
+    // console.log("files:"+newMovie.files)
+    // console.log(newMovie)
+    // newMovie.save()
+
+    
+    // .then((movie)=>{
+    
+            
+    //             res.status(201).json({
+    //                 message:'Movie was created',
+    //                 data:movie
+    //             })
+
+
         
-        s3.upload(params, function(err, data) {
-            if (err) {
-                throw err;
-            }
-
             
+           
+    //     })
+    
+    // .catch(err=>{
+    //     res.status(500).json({
+    //      message:'Movie was not created',
+    //      error:err
+    //     }) 
+    //  })
 
-            newMovie.img = data.Location
-            newMovie.save()
-            .then((movie)=>{
-                res.json({
-                    message:'Movie was created',
-                    data:movie
-                })
+   
 
-
-            })
-
-            
-            console.log(`File uploaded successfully. ${data.Location}`);
+        const AWS = require('aws-sdk');
+    
+        const s3 = new AWS.S3({
+            accessKeyId: process.env.ID,
+            secretAccessKey: process.env.SECRET
         });
     
-    })
-    .catch(err=>{
-        res.status(500).json({
-         message:'Movie was not created',
-         error:err
-        }) 
-     })
-}
+    
+        const newMovie = new movieModel(req.body)
+        
+       
+        newMovie.save()
+        .then((movie)=>{
+          
+            const fileName = `${uuidv4()}_${req.files.img.name}`
+            const params = {
+                Bucket: process.env.BUCKET_NAME,
+                Key: fileName,
+                Body:req.files.img.data
+            };
+            console.log("Blah")
+            
+            s3.upload(params, function(err, data) {
+                if (err) {
+                    throw err;
+                }
+    
+                
+    
+                newMovie.img = data.Location
+                newMovie.save()
+                .then((movie)=>{
+                    res.json({
+                        message:'Movie was created',
+                        data:movie
+                    })
+    
+    
+                })
+    
+                
+                console.log(`File uploaded successfully. ${data.Location}`);
+            });
+        
+        })
+        .catch(err=>{
+            res.status(500).json({
+             message:'Movie was not created',
+             error:err
+            }) 
+         })
+    }
+
 
 exports.deleteAMovie =(req,res)=>{
     movieModel.findByIdAndDelete(req.params.id)
