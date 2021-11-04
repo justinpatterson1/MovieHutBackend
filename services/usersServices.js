@@ -4,7 +4,57 @@ const jwt = require('jsonwebtoken');
 
 
 exports.getAllUsers=(req,res)=>{
+    if(req.query.q)
+    {
+        userModel.find({firstName:{$regex: new RegExp(req.query.q)}})
+       // .or({lastName:{$regex: new RegExp(req.query.q)}})
+        .then((user)=>{
+
+            if(user.length===0){
+                userModel.find({lastName:{$regex: new RegExp(req.query.q)}})
+                // .or({lastName:{$regex: new RegExp(req.query.q)}})
+                 .then((last)=>{
+         
+                    if(last.length===0){
+                        userModel.find({email:{$regex: new RegExp(req.query.q)}})
+                        .then((email)=>{
+                            res.json({
+                                message:'All Shows have been returned',
+                                data:email,
+                                length:email.length
+                
+                                
+                            })
+                        })
+                    }else{
+                     res.json({
+                         message:'All Shows have been returned',
+                         data:last,
+                         length:last.length
+         
+                         
+                     })
+
+                    }
+                 })
+            }else{
+                res.json({
+                    message:'All Shows have been returned',
+                    data:user,
+                    length:user.length
     
+                    
+                })
+            }
+          
+        })
+        .catch(err=>{
+            res.status(404).json({
+                message:'All Shows could not be returned',
+                data:err
+            }) 
+           })
+        }else{
     userModel.find()
     .then((movie)=>{
 
@@ -21,6 +71,7 @@ exports.getAllUsers=(req,res)=>{
             data:err
         }) 
        })
+    }
     
 }
 

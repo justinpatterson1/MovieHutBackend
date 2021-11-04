@@ -63,10 +63,10 @@ exports.getAllMovies=(req,res)=>{
                         })
                     })
                
-                } else if(req.query.page){
+                } else if(req.query.p){
                 movieModel.find({type:'Tv Show'})
                 .sort({release_date:req.query.sort})
-                .skip((req.query.page -1)*18)
+                .skip((req.query.p -1)*18)
                 .limit(18)
                 .then((movie)=>{
                     res.json({
