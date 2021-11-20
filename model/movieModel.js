@@ -41,10 +41,11 @@ const { Schema } = mongoose;
      type:String,
      required:true
    },
-   genre:{
-     type:String,
+   genre:[{
+    id:Number,
+    name:String,
      
-   },
+   }],
 
    description:{
     type:String,
@@ -55,6 +56,11 @@ const { Schema } = mongoose;
    },
    
    price:{
+    type:Number,
+    default:0.00,
+    require:true
+   },
+   rent:{
     type:Number,
     default:0.00,
     require:true
