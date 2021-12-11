@@ -6,7 +6,7 @@ router.get("/",movieServices.getAllMovies)
 router.post("/",movieServices.createAMovie)
  router.get("/TvShows",movieServices.getAllShows)
 router.get("/:id",movieServices.getAMovie)
-router.delete("/",movieServices.deleteAMovie)
+router.delete("/:id",movieServices.deleteAMovie)
 router.put("/:id",movieServices.updateAMovie)
 
 

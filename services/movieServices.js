@@ -410,24 +410,10 @@ exports.createAMovie =(req,res)=>{
 
 
 exports.deleteAMovie =(req,res)=>{
-    // movieModel.findByIdAndDelete(req.params.id)
-    // .then((movie)=>{
-    //     res.json({
-    //         message:`${req.params.id} was deleted`,
-    //         data:movie,
-    //         length:movie.length
-    //     })
-    // })
-    // .catch(err=>{
-    //     res.status(404).json({
-    //         message:`Movie ${req.params.id} could not be deleted`,
-    //         error:err
-    //        }) 
-    // })
-    movieModel.deleteMany({})
+    movieModel.findByIdAndDelete(req.params.id)
     .then((movie)=>{
         res.json({
-            message:` was deleted`,
+            message:`${req.params.id} was deleted`,
             data:movie,
             length:movie.length
         })
@@ -438,6 +424,20 @@ exports.deleteAMovie =(req,res)=>{
             error:err
            }) 
     })
+    // movieModel.deleteMany({})
+    // .then((movie)=>{
+    //     res.json({
+    //         message:` was deleted`,
+    //         data:movie,
+    //         length:movie.length
+    //     })
+    // })
+    // .catch(err=>{
+    //     res.status(404).json({
+    //         message:`Movie ${req.params.id} could not be deleted`,
+    //         error:err
+    //        }) 
+    // })
     
 }
 

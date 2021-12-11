@@ -78,6 +78,7 @@ const { Schema } = mongoose;
       default:false
     }
    }],
+   facebookId:String,
    dateCreated:
    {
        type:Date,

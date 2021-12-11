@@ -205,7 +205,7 @@ async  function axis(){
   const arr =[]
   let i = 1;
   while (i <= 10){
-    const a = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=7dbdc577453d35d0614ab7df17128a43&language=en-US&page=${i}`)
+    const a = await axios.get(`https://api.themoviedb.org/3/tv/popular?api_key=7dbdc577453d35d0614ab7df17128a43&language=en-US&page=${i}`)
      arr.push(a)
      i++
   }
@@ -216,7 +216,7 @@ async  function axis(){
 }
 
 async function getTrailer(x){
-  const t =  await axios.get(`https://api.themoviedb.org/3/movie/${x}/videos?api_key=7dbdc577453d35d0614ab7df17128a43&language=en-US`)
+  const t =  await axios.get(`https://api.themoviedb.org/3/tv/${x}/videos?api_key=7dbdc577453d35d0614ab7df17128a43&language=en-US`)
   return t
 }
 
@@ -309,15 +309,15 @@ exports.db=()=>{
     let k = 0
     
     
-      for(let i = 0;i < res[8].data.results.length;i++){
+      for(let i = 0;i < res[7].data.results.length;i++){
         let movieGenre = [];
-        let name = res[8].data.results[i].title
-        let img = res[8].data.results[i].poster_path
-        let overview = res[8].data.results[i].overview
-        let vote = res[8].data.results[i].vote_average
-        let release = res[8].data.results[i].release_date
-        let back = res[8].data.results[i].backdrop_path
-        let genre = res[8].data.results[i].genre_ids;
+        let name = res[7].data.results[i].name
+        let img = res[7].data.results[i].poster_path
+        let overview = res[7].data.results[i].overview
+        let vote = res[7].data.results[i].vote_average
+        let release = res[7].data.results[i].first_air_date
+        let back = res[7].data.results[i].backdrop_path
+        let genre = res[7].data.results[i].genre_ids;
   
         for(let x = 0;x<=genre.length;x++){
           let l = genres.find((g)=>{return g.id === genre[x]})
@@ -325,28 +325,71 @@ exports.db=()=>{
   
         }
   
-        getTrailer(res[k].data.results[i].id)
-        .then(trailer => {
-        
-          movieModel.create({
-            name:name,
-            img:process.env.BASE_POSTER_IMAGE_DOMAIN+img,
-            poster:process.env.BASE_BACKDROP_IMAGE_DOMAIN+back,
-            description:overview,
-            type:"Movie",
-            featured:"false",
-            rating:vote,
-            release_date:release,
-            promoted:false,
-            price:9.99,
-            rent:5.99,
-            trailer:t+trailer.data.results[0].key,
-            genre:movieGenre
+        console.log(res[0].data.results[i].id)
+        if(res[0].data.results[i].id != 'null'){
+          
+          getTrailer(res[0].data.results[i].id)
+          .then(trailer => {
+            if(trailer.data.results[0]){
+              
+                movieModel.create({
+                  name:name,
+                  img:process.env.BASE_POSTER_IMAGE_DOMAIN+img,
+                  poster:process.env.BASE_BACKDROP_IMAGE_DOMAIN+back,
+                  description:overview,
+                  type:"Tv Show",
+                  featured:"false",
+                  rating:vote,
+                  release_date:release,
+                  promoted:false,
+                  price:9.99,
+                  rent:5.99,
+                  trailer:t+trailer.data.results[0].key,
+                  genre:movieGenre
+              
+             })
+              
+            }
+            else{
+              movieModel.create({
+                name:name,
+                img:process.env.BASE_POSTER_IMAGE_DOMAIN+img,
+                poster:process.env.BASE_BACKDROP_IMAGE_DOMAIN+back,
+                description:overview,
+                type:"Tv Show",
+                featured:"false",
+                rating:vote,
+                release_date:release,
+                promoted:false,
+                price:9.99,
+                rent:5.99,
+                trailer:null,
+                genre:movieGenre
             
            })
+            }
           
-        })
-  
+            // movieModel.create({
+            //   name:name,
+            //   img:process.env.BASE_POSTER_IMAGE_DOMAIN+img,
+            //   poster:process.env.BASE_BACKDROP_IMAGE_DOMAIN+back,
+            //   description:overview,
+            //   type:"Tv Show",
+            //   featured:"false",
+            //   rating:vote,
+            //   release_date:release,
+            //   promoted:false,
+            //   price:9.99,
+            //   rent:5.99,
+            //   trailer:t+trailer.data.results[0].key,
+            //   genre:movieGenre
+              
+            //  })
+            
+          })
+    
+        }
+       
           
       
             }
