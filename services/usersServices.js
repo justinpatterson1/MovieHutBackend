@@ -308,54 +308,6 @@ exports.userAuthentication=(req,res)=>{
     })
 }
 
-exports.facebookAuthentication = (req,res)=>{
 
-   
-    passport.use(new FacebookStrategy({
-        clientID: process.env.FACEBOOK_APP_ID,
-        clientSecret: process.env.FACEBOOK_APP_SECRET,
-        callbackURL: "http://localhost:3000/auth/facebook/moviehut"
-      },
-      function(accessToken, refreshToken, profile, cb) {
-        User.findOrCreate({ facebookId: profile.id }, function (err, user) {
-          return cb(err, user);
-        });
-      }
-    ))
-    
-    passport.authenticate('facebook')
 
-    passport.serializeUser(function(user, done) {
-        done(null, user);
-    });
-    
-    // used to deserialize the user
-    passport.deserializeUser(function(user, done) {
-        return done(null,user)
-    });
-
- 
-}
-
-// exports.facebookAuthCallBack = (req,res)=>{
-//     passport.authenticate('facebook')
-//     .then(res =>{
-//         if(! passport.authenticate('facebook')){
-//             res.json({
-//                 value:false
-//             })
-//         }else{
-//             res.json({
-//                 value:true
-//             })
-//         }
-        
-//     })
-//     .catch(err=>{
-//         res.status(500).json({
-//             message:err
-//         })
-//     })
-    
-// }
 
